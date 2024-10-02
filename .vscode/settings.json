@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "text_encoding": "cpp",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "span": "c",
+        "future": "c",
+        "system_error": "c",
+        "exstd.h": "c",
+        "chrono": "c",
+        "typeinfo": "c"
+    }
+}
