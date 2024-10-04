@@ -1,13 +1,18 @@
 #define EXSTD_STRINGS
 #include "exstd.h"
 
-String mk_heap_string(str literal){
+String _String_constructor(str literal){
     usize inlen = strlen(literal); 
     char* heap = malloc(inlen + _STR_ALLOC_EXTRA);
     char* mdata = memcpy(heap, literal, inlen);
     String res = {inlen, inlen + _STR_ALLOC_EXTRA, mdata, _internal_string_append, _internal_string_extend, _internal_string_drop, _internal_string_get};
     return res;
 }
+
+void _String_destructor(String* self){
+    self->drop(self);
+}
+
 void _internal_string_append(String* self, const char* to_append){
     usize inlen = strlen(to_append);
     if(self->capacity < inlen + self->len + 1){

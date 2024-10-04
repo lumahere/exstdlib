@@ -2,21 +2,17 @@
 #include "exstd.h"
 
 CLASS(Res, 
-    String* a;
-    int b;)
+    int x;
+    int y;
+);
 
-CONSTRUCTOR(Res)(int a, int b){
-    String* bs = NEW(String, STR("Hello"));
-    return (Res){bs,b};    
+CONSTRUCTOR(Res)(int x, int y){
+    return(Res){x,y};
 }
 
 DESTRUCTOR(Res){
-    self->a->drop(self->a);
+    printf("Res is destroyed with value: %d %d\n", self->x, self->y);
 }
-
 int main(){
-    Res a = INSTANTIATE(Res, 2, 3);
-    DEFER(DESTROY(Res, &a)){
-        printf("%s\n",a.a->get(a.a));
-    }
+    i32* mamam = NEW(i32, 5);
 }
