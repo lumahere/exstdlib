@@ -125,9 +125,18 @@ typedef long i64;
     {                                    \
         members                          \
     } name;                              \
-    struct name _##name##_constructor(); \
+    struct name _##name##_new(){\
+        return (struct name){0};\
+    }\
+    void _##name##_constructor(); \
     void _##name##_destructor();
 
+#define CLASS_METHOD(ret_type, func_name, Args...) \
+    ret_type (*func_name)(Args)
+#define DECLARE_CLASS_METHOD(ret_type, class_name, func_name, Args...) \
+    ret_type _##class_name##_##func_name(Args)
+#define BIND_CLASS_METHOD(class_name, method_name) \
+        self->method_name = _##class_name##_##method_name
 // ### REQUIRED IN EVERY CLASS (even empty)
 // ##### Define a constructor for the struct, constructors have to return the built class
 // ## Example.
@@ -136,7 +145,7 @@ typedef long i64;
 //      return (Vector){a,b};
 //}
 //```
-#define CONSTRUCTOR(name) struct name _##name##_constructor
+#define CONSTRUCTOR(name, Args...) void _##name##_constructor(struct name *self, Args)
 
 // ### Not required, just dont call DESTROY() on it;
 // #### Calls the destructor of the class, define that first;
@@ -148,7 +157,11 @@ typedef long i64;
 //  }
 // ```
 #define DESTRUCTOR(name) void _##name##_destructor(struct name *self)
-#define INSTANTIATE(class, Args...) _##class##_constructor(Args)
+#define INSTANTIATE(class, Args...) ({ \
+    struct class a = _##class##_new();\
+    _##class##_constructor(&a, Args);\
+    a;\
+    })
 
 // ##### Dont call DESTROY if DESTRUCTOR for its class isn't defined
 #define DESTROY(class, var) _##class##_destructor(var)
