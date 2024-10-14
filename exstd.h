@@ -133,9 +133,9 @@ typedef long i64;
 
 #define CLASS_METHOD(ret_type, func_name, Args...) \
     ret_type (*func_name)(Args)
-#define DECLARE_CLASS_METHOD(ret_type, class_name, func_name, Args...) \
+#define IMPLEMENT_METHOD(ret_type, class_name, func_name, Args...) \
     ret_type _##class_name##_##func_name(Args)
-#define BIND_CLASS_METHOD(class_name, method_name) \
+#define BIND_METHOD(class_name, method_name) \
         self->method_name = _##class_name##_##method_name
 // ### REQUIRED IN EVERY CLASS (even empty)
 // ##### Define a constructor for the struct, constructors have to return the built class
@@ -174,6 +174,25 @@ typedef long i64;
 
 // TODO: Make a DERIVED constructor possible also it's Destructor; rethink the whole idea of classes
 
+#endif
+
+
+#if defined EXSTD_FULL || defined EXSTD_PATH
+#if !defined EXSTD_FULL && !defined EXSTD_STRINGS
+#error please define EXSTD_STRINGS to use EXSTD_PATH
+#endif
+
+    typedef struct Path{
+        String _m_internal_path;
+        str (*get)(struct Path* self);
+        void (*append)(struct Path* self, str toAppend);
+        void (*join)(struct Path* self, struct Path other);
+    } Path;
+    Path _path_constructor(str thing);
+    #define PATH(strliteral) _path_constructor(strliteral)
+
+    void _internal_append_path(Path* self);
+    void _internal_join_path(Path* self, Path* other);
 #endif
 
 #if defined EXSTD_FULL || defined EXSTD_IO
